@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Include the Roboto font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+    <style>
+        /* Your CSS styles for the login page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set a background color for the entire page */
+        body {
+            font-family: "Roboto", sans-serif;
+            background: #76b852;
+            background: rgb(141, 194, 111);
+            background: linear-gradient(90deg, rgba(141, 194, 111, 1) 0%, rgba(118, 184, 82, 1) 50%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Style for the login form container */
+        .login-form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #FFFFFF;
+            padding: 45px;
+            text-align: center;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+            border-radius: 5px;
+        }
+
+        /* Style for the login form */
+        .login-form {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #f2f2f2;
+            border: 0;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .login-form input[type="text"]::placeholder,
+        .login-form input[type="password"]::placeholder {
+            color: #4d4d4d;
+        }
+
+        .login-form button {
+            font-family: "Roboto", sans-serif;
+            text-transform: uppercase;
+            outline: 0;
+            background: #4CAF50;
+            width: 100%;
+            border: 0;
+            padding: 15px;
+            color: #FFFFFF;
+            font-size: 14px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .login-form button:hover, .login-form button:active, .login-form button:focus {
+            background: #43A047;
+        }
+
+        /* Style for the title */
+        h1 {
+            text-align:left;
+            color: #131212;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Style for the logo */
+        .logo {
+            
+            max-width: 200px; /* Adjust the width as needed */
+            margin-bottom: 20px; /* Adjust the margin as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form-container">
+        <img class="logo" src="khclogo.png" alt="Logo" width="200" height="50">
+        <h1>Login to Your Account!</h1>
+        <form class="login-form" id="login-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button id="login">Login</button>
+        </form>
+    </div>
+
+    <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('login-form');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent the default form submission behavior
+
+            const enteredUsername = usernameInput.value;
+            const enteredPassword = passwordInput.value;
+
+            // Make a request to the server (server.js) with the provided username and password
+            const serverUrl = 'https://intuneutility.azurewebsites.net';
+            fetch(`${serverUrl}/getAccessToken?username=${enteredUsername}&password=${enteredPassword}`, {
+                method: 'GET',
+                // Set a timeout for the fetch request
+                timeout: 5000, // 5 seconds
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    if (response.status === 403) {
+                        alert('Access denied. User is not part of the admin group.');
+                    } else if (response.status === 401) {
+                        alert('Invalid credentials. Please try again.');
+                    } else {
+                        alert('Server Down. Please try again later.');
+                    }
+                    throw new Error('Error');
+                }
+            })
+            .then(data => {
+                if (data.isUserAdmin) {
+                    localStorage.setItem('accessToken', data.access_token);
+                    localStorage.setItem('recovery_key_auth', data.recoveryKey);
+                    localStorage.setItem('authforApp', data.authforApp)
+                    window.location.href = 'intune.html';
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
