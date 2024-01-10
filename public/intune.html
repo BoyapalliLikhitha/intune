@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intune</title>
     <style>
-        /* Your existing CSS styles here */
+        
     body {
     font-family: "Roboto", sans-serif;
     background: #76b852; /* Green background color */
@@ -43,7 +43,7 @@
     }
 
     .input-container {
-        flex: 0.5;
+        flex: 0.35;
         padding-right: 20px;
         width: 45%; /* Adjust as needed */
         margin-right: 15px;
@@ -154,7 +154,151 @@
             
             margin-right: 100px;
         }
+        /* Modal styles - customize as needed */
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        }
 
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 60%;
+        }
+
+        .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        }
+
+        ul {
+        list-style: none;
+        padding: 0;
+        }
+
+        ul li {
+        cursor: pointer;
+        margin-bottom: 5px;
+        }
+
+        ul li:hover {
+        background-color: #f0f0f0;
+        }
+        /* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Content section styles */
+.content-section {
+    margin-bottom: 20px;
+}
+
+.group-section,
+.user-section {
+    margin-left: 20px;
+}
+
+.app-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust the column width as needed */
+    gap: 20px;
+    padding: 10px;
+}
+
+.app-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.app-item:hover {
+    background-color: #f0f0f0;
+}
+.dialog {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; /* Set the width as needed */
+            max-width: 80%; /* Max width of the modal */
+            max-height: 80vh; /* Set maximum height relative to the viewport height */
+            padding: 20px; /* Adjust padding as needed */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* Enable vertical scrolling if needed */
+        }
+
+        .dialog h3 {
+            margin-top: 0;
+        }
+
+        .dialog button {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .dialog button:hover {
+            background-color: #e9e9e9;
+        }
     </style>
 </head>
 <body>
@@ -190,9 +334,8 @@
     <button id="remoteWipe" disabled>Remote Wipe</button>
     <button id="remoteLock" disabled>Remote Lock</button>
     <button class="reset-button" id="reset">Reset</button>
-    <button class="cancel-button" id="cancel">Cancel</button>
+    <button class="cancel-button" id="cancel">Logout</button>
 
-    <!-- Add a modal for wipe options (initially hidden) -->
     <div id="wipeModal" class="modal">
         <div class="modal-content">
             <h2>Choose Wipe Type</h2>
@@ -201,60 +344,92 @@
             <button id="closeWipeModal">Close</button>
         </div>
     </div>
-    
-    <!-- Add a modal for group selection (initially hidden) -->
-    <div id="groupSelectionModal" class="modal">
-        <div class="modal-content">
-            <h2>Select a Group</h2> 
-            <label for="selectGroup">Select a group:</label>
-            <select id="selectGroup">
-                <!-- Options will be added dynamically using JavaScript -->
-            </select>
-            <button id="confirmGroupButton">Confirm</button>
-            <button id="closeGroupModal">Close</button>
-        </div>
-    </div>
-   
-
-    <div id="deviceSelectionModal" class="modal">
-        <div class="modal-content">
-            <h2>Select User or Device to add in to group</h2>
-            <div class="radio-group">
-                <input type="radio" id="userOption" name="memberOption" value="user">
-                <label for="userOption">User</label>
-                <input type="radio" id="deviceOption" name="memberOption" value="device">
-                <label for="deviceOption">Device</label>
-            </div>
-            <div id="memberInfo" style="display: none;">
-                <p><strong>Selected Member:</strong> <span id="selectedMemberInfo"></span></p>
-            </div>
-            <button id="confirmMemberButton">Confirm</button>
-            <button id="closeDeviceSelectionModal">Close</button>
-        </div>
-    </div>
-
-    <div id="deviceRemovalModal" class="modal">
-        <div class="modal-content">
-            <h2>Select User or Device to Remove from the group</h2>
-            <div class="radio-group">
-                <input type="radio" id="userOption1" name="memberOption" value="user">
-                <label for="userOption1">User</label>
-                <input type="radio" id="deviceOption1" name="memberOption" value="device">
-                <label for="deviceOption1">Device</label>
-            </div>
-            <div id="memberInfo1" style="display: none;">
-                <p><strong>Selected Member:</strong> <span id="selectedMemberInfo1"></span></p>
-            </div>
-            <button id="removeDeviceUserButton">Confirm</button>
-            <button id="closeDeviceRemovalModal">Close</button>
-        </div>
-    </div>
 
 </div>
 
+<div class="app-modal-container">
+    <!-- Modal for displaying app list -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Select an application </h2>
+            <div id="appList" class="app-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- The modal -->
+<div id="assignmentModal" class="modal">
+    <div id="modalContent" class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Assignments:</h2>
+        <div id="requiredSection" class="content-section">
+            <h3>Required:</h3>
+            <div id="requiredGroups" class="group-section"></div>
+            <div id="requiredUsers" class="user-section"></div>
+        </div>
+        <div id="availableSection" class="content-section">
+            <h3>Available for enrolled Devices:</h3>
+            <div id="availableGroups" class="group-section"></div>
+            <div id="availableUsers" class="user-section"></div>
+        </div>
+        <div id="uninstallSection" class="content-section">
+            <h3>Uninstall:</h3>
+            <div id="uninstallGroups" class="group-section"></div>
+            <div id="uninstallUsers" class="user-section"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id="dataTypeDialog" class="dialog">
+    <span class="close">&times;</span>
+    <h3>Select a Data Type:</h3>
+    <div id="dataTypeList" class="scrollable-dialog"></div>
+    
+  </div>
+  
+<div id="appsForDataTypeDialog" class="dialog">
+    <span class="close">&times;</span>
+    <h3>Select an App:</h3>
+    <div id="appListForDataType" class="scrollable-dialog"></div>
+</div>
+
+<div id="pushSelectionDialog" class="dialog">
+    <span id="closeDialogButton" class="close">&times;</span>
+    <p>Where do you want to push the application?</p>
+    <button id="pushToDeviceButton">Push to Device</button>
+    <button id="pushToUserButton">Push to User</button>
+    
+</div>
+<div id="removeSelectionDialog" class="dialog">
+    <span id="closeDialogButton" class="close">&times;</span>
+    <p>Where do you want to remove the application?</p>
+    <button id="removeToDeviceButton"> Remove from Device</button>
+    <button id="removeToUserButton">Remove to User</button>
+    
+</div>
+
+
+<div id="deviceGroupsDialog" class="dialog">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Device Groups:</h2>
+        <div id="deviceGroupsContent" class="content-section"></div>
+    </div>
+</div>
+
+<div id="userGroupsDialog" class="dialog">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Users Groups:</h2>
+        <div id="userGroupsContent" class="content-section"></div>
+    </div>
+</div>
 
 <script>
         
+    
     const accessToken = localStorage.getItem('accessToken');
     const authforApp=localStorage.getItem('authforApp')
     const recovery_key_auth=localStorage.getItem('recovery_key_auth')
@@ -319,7 +494,7 @@
     cancelButton.addEventListener('click', () => {
         // Implement the cancel action here (e.g., close the form)
         alert('Cancel button clicked. Implement cancel action here.');
-        window.location.href = 'index.html';
+        window.location.replace('index.html');
     });
 
     // Event listener for the "Get User Devices" button
@@ -379,9 +554,9 @@
         remoteWipeButton.disabled = false;
         pushAppButton.disabled = false;
     });
- // Event listener for the "Sync" button
 
-syncButton.addEventListener('click', () => {
+
+    syncButton.addEventListener('click', () => {
         // Get the selected device ID
         const selectedDeviceId = machineSelect.options[machineSelect.selectedIndex].value;
         const selectedDeviceName=machineSelect.options[machineSelect.selectedIndex].text;
@@ -654,393 +829,921 @@ rebootButton.addEventListener('click', () => {
     }
 });
 
-        // Function to create a custom dialog for selecting a group
-function createGroupSelectionDialog(options, callback) {
-    const selectGroupModal = document.getElementById('groupSelectionModal');
-    const selectGroup = document.getElementById('selectGroup');
-    const confirmGroupButton = document.getElementById('confirmGroupButton');
+// Store retrieved apps to prevent duplicates
+// Initialize the retrievedApps array
+let retrievedApps = [];
 
-    // Populate the select element with group options
-    selectGroup.innerHTML = options.map(option => `<option value="${option.id}">${option.displayName}</option>`).join('');
-    confirmGroupButton.addEventListener('click', () => {
-        const selectedGroupId = selectGroup.value;
-        callback(selectedGroupId);
-        // Close the modal
-        selectGroupModal.style.display = 'none';
-        
-    });
 
-    selectGroupModal.style.display = 'block';
-}
-
-// Function to check if the user/device exists in the group
-// Function to check if a user exists in the group
-async function checkIfUserExistsInGroup(userEmail, selectedGroupId, accessToken) {
-    const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${selectedGroupId}/members`, {
+pushAppButton.addEventListener('click', () => {
+    
+    const selectedDeviceId = machineSelect.options[machineSelect.selectedIndex].azureADDeviceId;
+    const selectedDeviceName = machineSelect.options[machineSelect.selectedIndex].text;
+    const userEmail = userEmailInput.value.trim();
+    const Functionality = "push";
+    // Make an API request to get applications
+    fetch('https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps', {
         headers: {
-            'Authorization': `Bearer ${accessToken}`
+            'Authorization': `Bearer ${authforApp}`
         }
-    });
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            retrievedApps = data.value;
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch group members. Status: ${response.status}`);
-    }
-
-    const membersData = await response.json();
-
-    return membersData.value.some(member => member.userPrincipalName === userEmail);
-}
-
-// Function to check if a device exists in the group
-async function checkIfDeviceExistsInGroup(selectedDeviceId, selectedGroupId, accessToken) {
-    const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${selectedGroupId}/members/microsoft.graph.device`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch device members. Status: ${response.status}`);
-    }
-
-    const deviceMembersData = await response.json();
-
-    return deviceMembersData.value.some(device => device.deviceId === selectedDeviceId);
-}
-
-// Function to check if a user/device exists in the group
-async function checkIfMemberExists(memberType, selectedDeviceId, userEmail, selectedGroupId, accessToken) {
-    if (memberType === 'user') {
-        return checkIfUserExistsInGroup(userEmail, selectedGroupId, accessToken);
-    } else if (memberType === 'device') {
-        return checkIfDeviceExistsInGroup(selectedDeviceId, selectedGroupId, accessToken);
-    }
-
-    return false;
-}
-
-// Function to create a custom dialog for selecting a group
-
-
-// Function to create a custom dialog for selecting a user or device
-function createDeviceUserSelectionDialog(selectedDeviceId, selectedDeviceName, userEmail, selectedGroupId, accessToken) {
-    const deviceSelectionModal = document.getElementById('deviceSelectionModal');
-    const userOption = document.getElementById('userOption');
-    const deviceOption = document.getElementById('deviceOption');
-    const confirmMemberButton = document.getElementById('confirmMemberButton');
-    const memberInfo = document.getElementById('memberInfo');
-    const selectedMemberInfo = document.getElementById('selectedMemberInfo');
-
-    userOption.addEventListener('change', () => {
-        // Display the member information in the modal when the User option is selected
-        memberInfo.style.display = 'block';
-        selectedMemberInfo.textContent = `Selected User: ${userEmail}`;
-    });
-
-    deviceOption.addEventListener('change', () => {
-        // Display the member information in the modal when the Device option is selected
-        memberInfo.style.display = 'block';
-        selectedMemberInfo.textContent = `Selected Device: ${selectedDeviceName} (${selectedDeviceId})`;
-    });
-    // Add a click event listener to the confirm button
-    confirmMemberButton.addEventListener('click', async () => {
-        const selectedOption = userOption.checked ? 'user' : deviceOption.checked ? 'device' : '';
-
-        if (!selectedOption) {
-            alert('Please select whether to add a User or Device.');
-            return;
-        }
-
-        // Handle the selected option (User or Device)
-        const isMember = await checkIfMemberExists(selectedOption, selectedDeviceId, userEmail, selectedGroupId, accessToken);
-
-        if (isMember) {
-            alert(`${selectedOption === 'user' ? 'User' : 'Device'} is already a member of the selected group.`);
+            // Extract unique data types
+            const dataTypes = [...new Set(data.value.map(app => app['@odata.type']))];
+            showDataTypesDialog(dataTypes,selectedDeviceId,userEmail,Functionality);
         } else {
-            // Construct the JSON body for adding the user/device to the group
-            let body;
-            if (selectedOption === 'user') {
-                body = {
-                    '@odata.id': `https://graph.microsoft.com/v1.0/users/${userEmail}`
-                };
-            } else if (selectedOption === 'device') {
-                const response = await fetch(`https://graph.microsoft.com/v1.0/devices`, {
-              headers: {
-              'Authorization': `Bearer ${accessToken}`
-              }
-              });
-
-             if (!response.ok) {
-              throw new Error(`Failed to fetch devices. Status: ${response.status}`);
-               }
-
-              const devicesData = await response.json();
-
-              const matchingDevice = devicesData.value.find(device => device.deviceId === selectedDeviceId);
-              const deviceId=matchingDevice.id
-                body = {
-                    '@odata.id': `https://graph.microsoft.com/v1.0/devices/${deviceId}`
-                };
-            }
-
-            // Make an API request to add the user/device to the group
-            const isAdded = await addMemberToGroup(selectedGroupId, body, accessToken);
-
-            if (isAdded) {
-                alert(`${selectedOption === 'user' ? 'User' : 'Device'} has been successfully added to the group.`);
-            } else {
-                alert(`Failed to add ${selectedOption === 'user' ? 'User' : 'Device'} to the group.`);
-            }
+            alert('No applications found in Intune.');
         }
-
-        // Close the modal
-        deviceSelectionModal.style.display = 'none';
-       
+    })
+    .catch(error => {
+        console.error('Error fetching applications:', error);
+        alert('Error fetching applications. Please try again later.');
     });
+});
 
-    deviceSelectionModal.style.display = 'block';
+function showDataTypesDialog(dataTypes,selectedDeviceId,userEmail,Functionality) {
+    // Assuming you have a dialog element with an ID 'dataTypeDialog'
+    const dataTypeDialog = document.getElementById('dataTypeDialog');
+    const dataTypeList = document.getElementById('dataTypeList'); // Element to display data types
+
+    // Clear previous data types
+    dataTypeList.innerHTML = '';
+
+    // Create and append data type items to the list container
+    dataTypes.forEach(dataType => {
+        const dataTypeItem = document.createElement('div');
+        dataTypeItem.classList.add('data-type-item');
+        dataTypeItem.textContent = dataType;
+        dataTypeList.appendChild(dataTypeItem);
+
+        // Handle click on data type item
+        dataTypeItem.addEventListener('click', () => {
+            handleDataTypeSelection(dataType,selectedDeviceId,userEmail,Functionality);
+            // Close the data type dialog or perform other actions as needed
+        });
+    });
+    const modal1 = document.getElementById('dataTypeDialog');
+   modal1.style.display = 'block';
+
+   const closeButton1 = modal1.querySelector('.close');
+   closeButton1.onclick = function() {
+    modal1.style.display = 'none';
+};
+  
+    
+}
+
+// Function to handle data type selection
+function handleDataTypeSelection(selectedDataType,selectedDeviceId,userEmail,Functionality) {
+
+// Retrieve apps based on selected data type
+const appsForSelectedType = retrievedApps.filter(app => app['@odata.type'] === selectedDataType);
+
+if (appsForSelectedType.length > 0) {
+    // Extract app names for display in a new dialog
+    const appsList = appsForSelectedType.map(app => ({ id: app.id, displayName: app.displayName }));
+    const appNamesForSelectedType = appsList.map(app => app.displayName);
+    // Show a dialog with apps for the selected data type
+    showAppsForDataTypeDialog(appNamesForSelectedType, appsForSelectedType,appsList,selectedDeviceId,userEmail,Functionality);
+} else {
+    alert('No applications found for the selected data type.');
+}
+}
+
+// Function to display apps for a selected data type in a new dialog
+function showAppsForDataTypeDialog(appNames, appsData,appsList,selectedDeviceId,userEmail,Functionality) {
+// Assuming you have a dialog element with an ID 'appsForDataTypeDialog'
+const appsForDataTypeDialog = document.getElementById('appsForDataTypeDialog');
+const appListForDataType = document.getElementById('appListForDataType'); // Element to display apps
+
+// Clear previous apps
+appListForDataType.innerHTML = '';
+
+// Create and append app items to the list container
+appNames.forEach((appName, index) => {
+    const appItem = document.createElement('div');
+    appItem.classList.add('app-item');
+    appItem.textContent = appName;
+    appListForDataType.appendChild(appItem);
+
+    // Handle click on app item
+    appItem.addEventListener('click', () => {
+        handleAppSelection(index, appsList,selectedDeviceId,userEmail,Functionality);
+        // Close the apps for data type dialog or perform other actions as needed
+    });
+});
+
+// Show the apps for data type dialog
+const modal1 = document.getElementById('appsForDataTypeDialog');
+
+modal1.style.display = 'block';
+const closeButton1 = modal1.querySelector('.close');
+ closeButton1.onclick = function() {
+modal1.style.display = 'none';
+};
+
 }
 
 
-function createDeviceUserSelectionDialogforremove(selectedDeviceId, selectedDeviceName, userEmail, selectedGroupId, accessToken) {
+// Function to handle selection of an application using the retrievedApps array
+function handleAppSelection(index, appsList,selectedDeviceId,userEmail,Functionality) {
+    const selectedApp = appsList[index];
 
-    const deviceRemovalModal = document.getElementById('deviceRemovalModal');
-    const userOption1 = document.getElementById('userOption1');
-    const deviceOption1 = document.getElementById('deviceOption1');
-    const removeDeviceUserButton = document.getElementById('removeDeviceUserButton');
-    const memberInfo1 = document.getElementById('memberInfo1');
-    const selectedMemberInfo1 = document.getElementById('selectedMemberInfo1');
+    if (selectedApp) {
 
-    userOption1.addEventListener('change', () => {
-        // Display the member information in the modal when the User option is selected
-        memberInfo1.style.display = 'block';
-        selectedMemberInfo1.textContent = `Selected User: ${userEmail}`;
-    });
-
-    deviceOption1.addEventListener('change', () => {
-        // Display the member information in the modal when the Device option is selected
-        memberInfo1.style.display = 'block';
-        selectedMemberInfo1.textContent = `Selected Device: ${selectedDeviceName} (${selectedDeviceId})`;
-    });
-    // Add a click event listener to the confirm button
-    removeDeviceUserButton.addEventListener('click', async () => {
-        const selectedOption1 = userOption1.checked ? 'user' : deviceOption1.checked ? 'device' : '';
-
-        if (!selectedOption1) {
-            alert('Please select whether to remove a User or Device.');
-            return;
+        if(Functionality=="push")
+        {
+         displayPushSelectionDialog(selectedApp,selectedDeviceId,userEmail);
         }
-        const isMember = await checkIfMemberExists(selectedOption1, selectedDeviceId, userEmail, selectedGroupId, accessToken);
-
-        if (!isMember) {
-            alert(`${selectedOption1 === 'user' ? 'User' : 'Device'} is not a member of the selected group.`);
-            // Exit the function early
+        else
+        {
+         displayRemoveSelectionDialog(selectedApp,selectedDeviceId,userEmail);
         }
-        else{
-        // Declare memberId
-        let memberId;
+    } else {
+        alert('Error: Unable to retrieve details for the selected application.');
+    }
+}
 
-        if (selectedOption1 === 'user') {
+let devicePushListener, userPushListener, closeDialogListener;
 
-            // Make an API request to fetch the user's ID based on the email
-            const response = await fetch(`https://graph.microsoft.com/v1.0/users?$filter=mail eq '${userEmail}'`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
+// Function to display the push selection dialog
+function displayPushSelectionDialog(selectedApp,selectedDeviceId,userEmail) {
+    const pushDialog = document.getElementById('pushSelectionDialog');
+    pushDialog.style.display = 'block';
+
+    const pushToDeviceButton = document.getElementById('pushToDeviceButton');
+    const pushToUserButton = document.getElementById('pushToUserButton');
+    const closeDialogButton = document.getElementById('closeDialogButton');
+
+    // Remove previous event listeners
+    pushToDeviceButton.removeEventListener('click', devicePushListener);
+    pushToUserButton.removeEventListener('click', userPushListener);
+    closeDialogButton.removeEventListener('click', closeDialogListener);
+
+    // Set up event listeners
+    devicePushListener = () => {
+        handleDeviceSelection(selectedApp,selectedDeviceId,userEmail);
+        pushDialog.style.display = 'none';
+    };
+    userPushListener = () => {
+        handleUserPush(selectedApp,selectedDeviceId,userEmail);
+        pushDialog.style.display = 'none';
+    };
+    closeDialogListener = () => {
+        pushDialog.style.display = 'none';
+    };
+
+    pushToDeviceButton.addEventListener('click', devicePushListener);
+    pushToUserButton.addEventListener('click', userPushListener);
+    closeDialogButton.addEventListener('click', closeDialogListener);
+}
+
+
+// ... (Previous code remains the same)
+
+function handleDeviceSelection(selectedApp,selectedDeviceId,userEmail) {
+    const mobileAppId = selectedApp.id;
+
+    fetch(`https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/${mobileAppId}/assignments`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            const assignments = data.value;
+            const deviceGroups = [];
+
+            const promises = assignments.map(assignment => {
+                const target = assignment.target;
+
+                if (target['@odata.type'] === '#microsoft.graph.groupAssignmentTarget') {
+                    const groupId = target.groupId;
+
+                    const groupDetailsPromise = fetchGroupDetails(groupId);
+                    const groupMembersPromise = fetchGroupMembers(groupId);
+
+                    return Promise.all([groupDetailsPromise, groupMembersPromise])
+                        .then(([groupDetails, members]) => {
+                            const groupName = groupDetails.displayName.toLowerCase();
+
+                            if (groupName.includes('device')) {
+                                deviceGroups.push({
+                                    groupName: groupDetails.displayName,
+                                    intent: assignment.intent
+                                });
+                            } else {
+                                const memberTypes = new Set(members.value.map(member => member['@odata.type']));
+                                if (memberTypes.size === 1 && memberTypes.has('#microsoft.graph.device')) {
+                                    deviceGroups.push({
+                                        groupName: groupDetails.displayName,
+                                        intent: assignment.intent
+                                    });
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group details or members:', error);
+                        });
                 }
             });
 
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user. Status: ${response.status}`);
-            }
+            Promise.all(promises)
+                .then(() => {
+                    if (deviceGroups.length > 0) {
+                        displayDeviceGroupsDialog(deviceGroups,selectedDeviceId,userEmail);
+                    } else {
+                        
+                        alert('No groups found to add device,please check in intune portal manually .');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error in Promise.all:', error);
+                });
+        } else {
+            alert('No app assignments found for the selected app,please check in intune portal manually .');
+            // Handle scenario where no app assignments are found
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching app assignments:', error);
+        // Handle errors as needed
+    });
+}
 
-            const userData = await response.json();
+// Function to fetch group details
+function fetchGroupDetails(groupId) {
+    return fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error fetching group details:', error);
+    });
+}
 
-            if (userData.value.length === 1) {
-                memberId = userData.value[0].id;
-            } else {
-                alert(`User with email ${userEmail} not found.`);
-                // Exit the function early
-            }
-       } 
-       else  {
-            const response = await fetch(`https://graph.microsoft.com/v1.0/devices`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
+// Function to fetch group members
+function fetchGroupMembers(groupId) {
+    return fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error fetching group members:', error);
+    });
+}
 
-            if (!response.ok) {
-                throw new Error(`Failed to fetch devices. Status: ${response.status}`);
-            }
 
-            const devicesData = await response.json();
+function displayDeviceGroupsDialog(deviceGroups,selectedDeviceId,userEmail) {
+    const deviceGroupsDialog = document.getElementById('deviceGroupsDialog');
+    const deviceGroupsContent = document.getElementById('deviceGroupsContent');
 
-            const matchingDevice = devicesData.value.find(device => device.deviceId === selectedDeviceId);
+    // Clear previous content
+    deviceGroupsContent.innerHTML = '';
 
-            if (matchingDevice) {
-                memberId = matchingDevice.id;
-            } else {
-                alert(`Device with ID ${selectedDeviceId} not found.`);
+    // Create and append group items to the dialog
+    deviceGroups.forEach(group => {
+        if(group.intent!=='uninstall'){
+        const groupItem = document.createElement('div');
+        groupItem.classList.add('group-item');
+        groupItem.textContent = `Group Name: ${group.groupName}, Intent: ${group.intent}`;
+        groupItem.addEventListener('click', () => {
+            const confirmation = confirm(`Do you want to add the device to group: ${group.groupName}?`);
+            if (confirmation) {
+                fetchGroupID(group.groupName)
+                        .then(groupID => {
+                            if (groupID) {
+                                
+                                addDeviceToGroup(groupID,group.groupName,selectedDeviceId)
+                            } else {
+                                alert('Group ID not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group ID:', error);
+                        });
                 
             }
-        } 
-
-        // Check if the selected user/device is a member of the selected group
-        
-
-        // Make an API request to remove the user/device from the group
-        const isRemoved = await removeMemberFromGroup(selectedGroupId, memberId, accessToken);
-
-        if (isRemoved) {
-            alert(`${selectedOption1 === 'user' ? 'User' : 'Device'} has been removed from the selected group successfully.`);
-           
-        } else {
-            alert(`Failed to remove ${selectedOption1=== 'user' ? 'User' : 'Device'} from the selected group.`);
-            
-        }
+        });
+        deviceGroupsContent.appendChild(groupItem);
     }
-        // Remove the dialog element from the document
-        deviceRemovalModal.style.display = 'none';
-       
     });
 
-    deviceRemovalModal.style.display = 'block';
+    // Show the device groups dialog
+    const modal2 = document.getElementById('deviceGroupsDialog');
+    modal2.style.display = 'block';
+    const closeButton = modal2.querySelector('.close');
+    closeButton.onclick = function() {
+    modal2.style.display = 'none';
+}
 }
 
+// Function to handle the selection of pushing the app to a user
+function handleUserPush(selectedApp,selectedDeviceId,userEmail) {
+    const mobileAppId = selectedApp.id;
 
-// Function to add a user/device to the group
-async function addMemberToGroup(selectedGroupId, body, accessToken) {
-    const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${selectedGroupId}/members/$ref`, {
+    fetch(`https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/${mobileAppId}/assignments`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            const assignments = data.value;
+            const userGroups = [];
+
+            const promises = assignments.map(assignment => {
+                const target = assignment.target;
+
+                if (target['@odata.type'] === '#microsoft.graph.groupAssignmentTarget') {
+                    const groupId = target.groupId;
+
+                    const groupDetailsPromise = fetchGroupDetails(groupId);
+                    const groupMembersPromise = fetchGroupMembers(groupId);
+
+                    return Promise.all([groupDetailsPromise, groupMembersPromise])
+                        .then(([groupDetails, members]) => {
+                            const groupName = groupDetails.displayName.toLowerCase();
+
+                            if (groupName.includes('user')) {
+                                userGroups.push({
+                                    groupName: groupDetails.displayName,
+                                    intent: assignment.intent
+                                });
+                            } else {
+                                const memberTypes = new Set(members.value.map(member => member['@odata.type']));
+                                if (memberTypes.size === 1 && memberTypes.has('#microsoft.graph.user')) {
+                                    userGroups.push({
+                                        groupName: groupDetails.displayName,
+                                        intent: assignment.intent
+                                    });
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group details or members:', error);
+                        });
+                }
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    if (userGroups.length > 0) {
+                        displayUserGroupsDialog(userGroups,selectedDeviceId,userEmail);
+                    } else {
+                        alert('No user groups found to add the app. Please check in Intune portal manually.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error in Promise.all:', error);
+                });
+        } else {
+            alert('No app assignments found for the selected app. Please check in Intune portal manually.');
+            // Handle scenario where no app assignments are found
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching app assignments:', error);
+        // Handle errors as needed
+    });
+}
+
+// Function to display user groups dialog
+function displayUserGroupsDialog(userGroups,selectedDeviceId,userEmail) {
+    const userGroupsDialog = document.getElementById('userGroupsDialog');
+    const userGroupsContent = document.getElementById('userGroupsContent');
+
+    // Clear previous content
+    userGroupsContent.innerHTML = '';
+
+    // Create and append group items to the dialog
+    userGroups.forEach(group => {
+        if(group.intent!=='uninstall'){
+        const groupItem = document.createElement('div');
+        groupItem.classList.add('group-item');
+        groupItem.textContent = `Group Name: ${group.groupName}, Intent: ${group.intent}`;
+        groupItem.addEventListener('click', () => {
+            const confirmation = confirm(`Do you want to add the app to group: ${group.groupName}?`);
+            if (confirmation) {
+                
+                fetchGroupID(group.groupName)
+                        .then(groupID => {
+                            if (groupID) {
+                                
+                                addUserToGroup(groupID,group.groupName,userEmail)
+                            } else {
+                                alert('Group ID not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group ID:', error);
+                        });
+            }
+        });
+        userGroupsContent.appendChild(groupItem);
+    }
+    });
+
+    // Show the user groups dialog
+    userGroupsDialog.style.display = 'block';
+    const closeButton = userGroupsDialog.querySelector('.close');
+    closeButton.onclick = function() {
+        userGroupsDialog.style.display = 'none';
+    };
+}
+function addDeviceToGroup(groupId,groupName,deviceId) {
+
+    
+    fetch(`https://graph.microsoft.com/v1.0/devices`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch devices. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(devicesData => {
+        const matchingDevice = devicesData.value.find(device => device.deviceId === deviceId);
+        if (matchingDevice) {
+            const body = {
+                '@odata.id': `https://graph.microsoft.com/v1.0/devices/${matchingDevice.id}`
+            };
+
+            return fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/$ref`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authforApp}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+        } else {
+            throw new Error('Device not found.');
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert(`Device added to group : ${groupName}`);
+        } else {
+            alert('failed to add device')
+        }
+    })
+    .catch(error => {
+        console.error('Error adding device to group:', error);
+        alert('Failed to add device to group. Please check your network connection or try again later.');
+    });
+
+
+
+}
+
+function addUserToGroup(groupId,groupName,userEmail) {
+
+    
+    const body = {
+        '@odata.id': `https://graph.microsoft.com/v1.0/users/${userEmail}`
+    };
+
+    fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/$ref`, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${authforApp}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert(`User added to group: ${groupName}`);
+        } else {
+            alert(`Failed to add user to group: ${groupName}`);
+        }
+    })
+    .catch(error => {
+        console.error('Error adding user to group:', error);
+        alert('Failed to add user to group. Please check your network connection or try again later.');
     });
-    
-    return response.ok;
+}
+
+function fetchGroupID(groupName) {
+    return fetch(`https://graph.microsoft.com/v1.0/groups?$filter=displayName eq '${groupName}'`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            return data.value[0].id; // Return the first group's ID
+        }
+        return null; // If group not found
+    })
+    .catch(error => {
+        console.error('Error fetching group ID:', error);
+        throw error;
+    });
 }
 
 
-// Event listener for the "Push App" button
-pushAppButton.addEventListener('click', async () => {
-    // Get the selected device ID, device name, and user email
+
+
+
+
+
+removeAppButton.addEventListener('click', () => {
     
     const selectedDeviceId = machineSelect.options[machineSelect.selectedIndex].azureADDeviceId;
     const selectedDeviceName = machineSelect.options[machineSelect.selectedIndex].text;
     const userEmail = userEmailInput.value.trim();
+    const Functionality="remove"
 
-    try {
-        // Make an API request to get all groups
-        const groupsResponse = await fetch('https://graph.microsoft.com/v1.0/groups', {
-            headers: {
-                'Authorization': `Bearer ${authforApp}`
-            }
-        });
-
-        if (!groupsResponse.ok) {
-            throw new Error(`Failed to fetch groups. Status: ${groupsResponse.status}`);
+    // Make an API request to get applications
+    fetch('https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps', {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            retrievedApps = data.value;
 
-        const groupsData = await groupsResponse.json();
-
-        if (!groupsData.value || groupsData.value.length === 0) {
-            throw new Error('No groups found.');
+            // Extract unique data types
+            const dataTypes = [...new Set(data.value.map(app => app['@odata.type']))];
+            showDataTypesDialog(dataTypes,selectedDeviceId,userEmail,Functionality);
+        } else {
+            alert('No applications found in Intune.');
         }
-
-        // Create a custom dialog to select a group
-        createGroupSelectionDialog(groupsData.value, async (selectedGroupId) => {
-            
-            deviceRemovalModal.style.display = 'none';
-            // Create a custom dialog for selecting device/user after selecting a group
-            createDeviceUserSelectionDialog(selectedDeviceId, selectedDeviceName, userEmail, selectedGroupId, authforApp);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-    
-        alert(`An error occurred: ${error.message}`);
-    }
+    })
+    .catch(error => {
+        console.error('Error fetching applications:', error);
+        alert('Error fetching applications. Please try again later.');
+    });
 });
 
-// Function to remove a user/device from the group
-async function removeMemberFromGroup(selectedGroupId, memberId, accessToken) {
-    const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${selectedGroupId}/members/${memberId}/$ref`, {
-        method: 'DELETE',
+
+
+
+
+
+let deviceRemoveListener, userRemoveListener, closeDialogListener1;
+
+// Function to display the push selection dialog
+function displayRemoveSelectionDialog(selectedApp,selectedDeviceId,userEmail) {
+    const removeDialog = document.getElementById('removeSelectionDialog');
+    removeDialog.style.display = 'block';
+
+    const removeToDeviceButton = document.getElementById('removeToDeviceButton');
+    const removeToUserButton = document.getElementById('removeToUserButton');
+    const closeDialogButton = document.getElementById('closeDialogButton');
+
+    // Remove previous event listeners
+    removeToDeviceButton.removeEventListener('click', deviceRemoveListener);
+    removeToUserButton.removeEventListener('click', userRemoveListener);
+    closeDialogButton.removeEventListener('click', closeDialogListener1);
+
+    // Set up event listeners
+    deviceRemoveListener = () => {
+        handleDeviceSelectionforremove(selectedApp,selectedDeviceId,userEmail);
+        removeDialog.style.display = 'none';
+    };
+    userRemoveListener = () => {
+        handleUserRemove(selectedApp,selectedDeviceId,userEmail);
+        removeDialog.style.display = 'none';
+    };
+    closeDialogListener1 = () => {
+        removeDialog.style.display = 'none';
+    };
+
+    removeToDeviceButton.addEventListener('click', deviceRemoveListener);
+    removeToUserButton.addEventListener('click', userRemoveListener);
+    closeDialogButton.addEventListener('click', closeDialogListener);
+}
+
+
+function handleDeviceSelectionforremove(selectedApp,selectedDeviceId,userEmail) {
+    const mobileAppId = selectedApp.id;
+
+    fetch(`https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/${mobileAppId}/assignments`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            const assignments = data.value;
+            const deviceGroups = [];
+
+            const promises = assignments.map(assignment => {
+                const target = assignment.target;
+
+                if (target['@odata.type'] === '#microsoft.graph.groupAssignmentTarget') {
+                    const groupId = target.groupId;
+
+                    const groupDetailsPromise = fetchGroupDetails(groupId);
+                    const groupMembersPromise = fetchGroupMembers(groupId);
+
+                    return Promise.all([groupDetailsPromise, groupMembersPromise])
+                        .then(([groupDetails, members]) => {
+                            const groupName = groupDetails.displayName.toLowerCase();
+
+                            if (groupName.includes('device')) {
+                                deviceGroups.push({
+                                    groupName: groupDetails.displayName,
+                                    intent: assignment.intent
+                                });
+                            } else {
+                                const memberTypes = new Set(members.value.map(member => member['@odata.type']));
+                                if (memberTypes.size === 1 && memberTypes.has('#microsoft.graph.device')) {
+                                    deviceGroups.push({
+                                        groupName: groupDetails.displayName,
+                                        intent: assignment.intent
+                                    });
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group details or members:', error);
+                        });
+                }
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    if (deviceGroups.length > 0) {
+                        displayDeviceGroupsDialogforremove(deviceGroups,selectedDeviceId,userEmail);
+                    } else {
+                        
+                        alert('No groups found to add device,please check in intune portal manually .');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error in Promise.all:', error);
+                });
+        } else {
+            alert('No app assignments found for the selected app,please check in intune portal manually .');
+            // Handle scenario where no app assignments are found
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching app assignments:', error);
+        // Handle errors as needed
+    });
+}
+
+
+
+
+
+
+function displayDeviceGroupsDialogforremove(deviceGroups,selectedDeviceId,userEmail) {
+    const deviceGroupsDialog = document.getElementById('deviceGroupsDialog');
+    const deviceGroupsContent = document.getElementById('deviceGroupsContent');
+
+    // Clear previous content
+    deviceGroupsContent.innerHTML = '';
+
+    // Create and append group items to the dialog
+    deviceGroups.forEach(group => {
+        if(group.intent!=='uninstall'){
+        const groupItem = document.createElement('div');
+        groupItem.classList.add('group-item');
+        groupItem.textContent = `Group Name: ${group.groupName}, Intent: ${group.intent}`;
+        groupItem.addEventListener('click', () => {
+            const confirmation = confirm(`Do you want to remove the device to group: ${group.groupName}?`);
+            if (confirmation) {
+                fetchGroupID(group.groupName)
+                        .then(groupID => {
+                            if (groupID) {
+                                
+                                removeDeviceToGroup(groupID,group.groupName,selectedDeviceId)
+                            } else {
+                                alert('Group ID not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group ID:', error);
+                        });
+                
+            }
+        });
+        deviceGroupsContent.appendChild(groupItem);
+    }
+    });
+
+    // Show the device groups dialog
+    const modal2 = document.getElementById('deviceGroupsDialog');
+    modal2.style.display = 'block';
+    const closeButton = modal2.querySelector('.close');
+    closeButton.onclick = function() {
+    modal2.style.display = 'none';
+}
+}
+
+// Function to handle the selection of removing the app to a user
+function handleUserRemove(selectedApp,selectedDeviceId,userEmail) {
+    const mobileAppId = selectedApp.id;
+
+    fetch(`https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/${mobileAppId}/assignments`, {
+        headers: {
+            'Authorization': `Bearer ${authforApp}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.value && data.value.length > 0) {
+            const assignments = data.value;
+            const userGroups = [];
+
+            const promises = assignments.map(assignment => {
+                const target = assignment.target;
+
+                if (target['@odata.type'] === '#microsoft.graph.groupAssignmentTarget') {
+                    const groupId = target.groupId;
+
+                    const groupDetailsPromise = fetchGroupDetails(groupId);
+                    const groupMembersPromise = fetchGroupMembers(groupId);
+
+                    return Promise.all([groupDetailsPromise, groupMembersPromise])
+                        .then(([groupDetails, members]) => {
+                            const groupName = groupDetails.displayName.toLowerCase();
+
+                            if (groupName.includes('user')) {
+                                userGroups.push({
+                                    groupName: groupDetails.displayName,
+                                    intent: assignment.intent
+                                });
+                            } else {
+                                const memberTypes = new Set(members.value.map(member => member['@odata.type']));
+                                if (memberTypes.size === 1 && memberTypes.has('#microsoft.graph.user')) {
+                                    userGroups.push({
+                                        groupName: groupDetails.displayName,
+                                        intent: assignment.intent
+                                    });
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group details or members:', error);
+                        });
+                }
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    if (userGroups.length > 0) {
+                        displayUserGroupsDialogforremove(userGroups,selectedDeviceId,userEmail);
+                    } else {
+                        alert('No user groups found to remove the app. Please check in Intune portal manually.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error in Promise.all:', error);
+                });
+        } else {
+            alert('No app assignments found for the selected app. Please check in Intune portal manually.');
+            // Handle scenario where no app assignments are found
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching app assignments:', error);
+        // Handle errors as needed
+    });
+}
+
+// Function to display user groups dialog
+function displayUserGroupsDialogforremove(userGroups,selectedDeviceId,userEmail) {
+    const userGroupsDialog = document.getElementById('userGroupsDialog');
+    const userGroupsContent = document.getElementById('userGroupsContent');
+
+    // Clear previous content
+    userGroupsContent.innerHTML = '';
+
+    // Create and append group items to the dialog
+    userGroups.forEach(group => {
+        if(group.intent!=='uninstall'){
+        const groupItem = document.createElement('div');
+        groupItem.classList.add('group-item');
+        groupItem.textContent = `Group Name: ${group.groupName}, Intent: ${group.intent}`;
+        groupItem.addEventListener('click', () => {
+            const confirmation = confirm(`Do you want to remove the app to group: ${group.groupName}?`);
+            if (confirmation) {
+                
+                fetchGroupID(group.groupName)
+                        .then(groupID => {
+                            if (groupID) {
+                                
+                                removeUserToGroup(groupID,group.groupName,userEmail)
+                            } else {
+                                alert('Group ID not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group ID:', error);
+                        });
+            }
+        });
+        userGroupsContent.appendChild(groupItem);
+    }
+    });
+
+    // Show the user groups dialog
+    userGroupsDialog.style.display = 'block';
+    const closeButton = userGroupsDialog.querySelector('.close');
+    closeButton.onclick = function() {
+        userGroupsDialog.style.display = 'none';
+    };
+}
+
+function removeDeviceToGroup(groupId, groupName, deviceId) 
+{
+    fetch(`https://graph.microsoft.com/v1.0/devices`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch devices. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(devicesData => {
+        const matchingDevice = devicesData.value.find(device => device.deviceId === deviceId);
+        if (matchingDevice) {
+            const body = {
+                '@odata.id': `https://graph.microsoft.com/v1.0/devices/${matchingDevice.id}`
+            };
+
+            return fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/${matchingDevice.id}/$ref`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authforApp}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+        } else {
+            throw new Error('Device not found.');
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert(`Device removed from group : ${groupName}`);
+        } else {
+            alert('failed to remove device')
+        }
+    })
+    .catch(error => {
+        console.error('Error removing device to group:', error);
+        alert('Failed to remove device to group. Please check your network connection or try again later.');
     });
 
-    return response.ok;
+
 }
 
-// Event listener for the "Remove App" button
-removeAppButton.addEventListener('click', async () => {
- 
-     
-    // Get the selected device ID, device name, and user email
-    const selectedDeviceId = machineSelect.options[machineSelect.selectedIndex].azureADDeviceId;
-    const selectedDeviceName = machineSelect.options[machineSelect.selectedIndex].text;
-    const userEmail = userEmailInput.value.trim();
-    
 
-    try {
-        // Make an API request to get all groups
-        const groupsResponse = await fetch('https://graph.microsoft.com/v1.0/groups', {
-            headers: {
-                'Authorization': `Bearer ${authforApp}`
-            }
-        });
 
-        if (!groupsResponse.ok) {
-            throw new Error(`Failed to fetch groups. Status: ${groupsResponse.status}`);
+function removeUserToGroup(groupId,groupName,userEmail) 
+{
+    fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/$ref`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${authforApp}`,
+            'Content-Type': 'application/json' // Include Content-Type header
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            alert(`User removed from group: ${groupName}`);
+        } else {
+            alert(`Failed to remove user to group: ${groupName}`);
         }
+    })
+    .catch(error => {
+        console.error('Error removing user to group:', error);
+        alert('Failed to remove user to group. Please check your network connection or try again later.');
+    });
+}
 
-        const groupsData = await groupsResponse.json();
-
-        if (!groupsData.value || groupsData.value.length === 0) {
-            throw new Error('No groups found.');
-        }
-
-        // Create a custom dialog to select a group
-        createGroupSelectionDialog(groupsData.value, async (selectedGroupId) => {
-
-            deviceSelectionModal.style.display='none'
-           
-            
-            createDeviceUserSelectionDialogforremove(selectedDeviceId, selectedDeviceName, userEmail, selectedGroupId, authforApp);
-                
-            
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        alert(`An error occurred: ${error.message}`);
-    }
-});
-
-// Event Listener to close the Modals
 
 document.getElementById("closeWipeModal").addEventListener("click", () => {
     document.getElementById("wipeModal").style.display = "none";
   });
 
-  // Function to close the groupSelectionModal
-  document.getElementById("closeGroupModal").addEventListener("click", () => {
-    document.getElementById("groupSelectionModal").style.display = "none";
-  });
 
-  // Function to close the deviceSelectionModal
-  document.getElementById("closeDeviceSelectionModal").addEventListener("click", () => {
-    document.getElementById("deviceSelectionModal").style.display = "none";
-  });
-
-  // Function to close the deviceRemovalModal
-  document.getElementById("closeDeviceRemovalModal").addEventListener("click", () => {
-    document.getElementById("deviceRemovalModal").style.display = "none";
-  });
-
-
-    </script>
+</script>
 </body>
 </html>
