@@ -491,10 +491,19 @@
     });
 
     // Event listener for the cancel button
-    cancelButton.addEventListener('click', () => {
-        // Implement the cancel action here (e.g., close the form)
-        alert('Cancel button clicked. Implement cancel action here.');
-        window.location.replace('index.html');
+       cancelButton.addEventListener('click', () => {
+        // Show a confirmation dialog
+        var result = confirm('Are you sure you want to log out?');
+
+        if (result) {
+            // User clicked 'OK' (Yes), proceed with the logout action
+            alert('Logging out. Redirecting to login page...');
+            // Redirect or perform logout action here
+            window.location.replace('index.html');
+        } else {
+            // User clicked 'Cancel' (No), stay on the page
+            alert('Logout canceled. Continuing with the current session.');
+        }
     });
 
     // Event listener for the "Get User Devices" button
