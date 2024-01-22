@@ -263,6 +263,14 @@
 .app-item:hover {
     background-color: #f0f0f0;
 }
+.data-type-item{
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+.data-type-item:hover{
+    background-color: #f0f0f0;
+}
 .dialog {
             display: none;
             position: fixed;
@@ -885,7 +893,17 @@ function showDataTypesDialog(dataTypes,selectedDeviceId,userEmail,Functionality)
     dataTypes.forEach(dataType => {
         const dataTypeItem = document.createElement('div');
         dataTypeItem.classList.add('data-type-item');
-        dataTypeItem.textContent = dataType;
+        const dataTypeMappings = {
+        '#microsoft.graph.managedAndroidStoreApp': 'Managed Android Store App',
+        '#microsoft.graph.managedIOSStoreApp': 'Managed iOS Store App',
+        '#microsoft.graph.win32LobApp': 'Win32 Line of Business App',
+        '#microsoft.graph.iosStoreApp': 'iOS Store App',
+        '#microsoft.graph.windowsUniversalAppX': 'Windows Universal AppX',
+        '#microsoft.graph.windowsMicrosoftEdgeApp': 'Microsoft Edge for Windows',
+        '#microsoft.graph.windowsMobileMSI': 'Windows Mobile Installer',
+    };
+    const datatypeName = dataTypeMappings[dataType] || dataType;
+        dataTypeItem.textContent = datatypeName;
         dataTypeList.appendChild(dataTypeItem);
 
         // Handle click on data type item
