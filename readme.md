@@ -34,14 +34,19 @@ Today, we'll guide you through our solution, highlighting its key features, the 
 7. **Q&A**
    - Finally, we'll open the floor for any questions you may have about our solution, its implementation, or its potential impact.
 
-Let's begin by addressing the problem statement that inspired our innovation."
 
-In today’s increasingly complex IT landscape, organizations often deploy a mix of devices across various operating systems to meet diverse operational needs. Microsoft Intune and Jamf Pro are widely used for managing Windows and Apple devices, respectively. However, managing these platforms independently can be cumbersome and inefficient for IT administrators.
+Introducing our unified device management tool that integrates Jamf and Intune operations into a single dashboard. This tool streamlines device management tasks, simplifies execution, ensures consistent policy enforcement, and enhances visibility and control.
 
-To address these challenges, we propose a unified interface that integrates both Intune and Jamf operations. This integration significantly enhances device management efficiency, streamlines workflows, and ensures consistent policy enforcement across all devices.
+Problem Statement:
+**Current device management processes face several challenges:**
 
-To build this solution, we utilized the Intune and Jamf APIs along with HTML, CSS, and Node.js for the UI. We are hosting this interface as an Azure Static Web App, ensuring scalability and robust performance
+**Inefficiencies and Complexity:** Managing devices across separate systems (Intune and Jamf) is time-consuming and error-prone, requiring administrators to switch between platforms.
 
+**Inconsistent Policy Enforcement:** Disparate systems can lead to security policies and configurations being inconsistently applied across devices, creating potential security gaps.
+
+**Limited Visibility and Control:** Fragmented management tools provide insufficient oversight, making it difficult to quickly respond to incidents and make informed decisions.
+
+**Dependency on Service Desk Teams:**  The need for multiple service desk teams to handle different systems complicates collaboration and ticket resolution processes.
 ---
 
 This updated script includes the technical stack information and smoothly integrates it into the introduction, providing a clear and comprehensive start to your presentation.
